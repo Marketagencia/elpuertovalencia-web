@@ -1085,10 +1085,39 @@
     /* ---- FORM SUBMIT ---- */
     function handleSubmit(e) {
       e.preventDefault();
-      const btn = e.target.querySelector('.form-submit');
-      btn.textContent = '✅ ¡Solicitud enviada! Te contactamos pronto';
-      btn.style.background = '#2e7d32';
+      const form = e.target;
+      const btn = form.querySelector('.form-submit');
+      btn.textContent = 'Enviando...';
       btn.disabled = true;
+
+      const data = {
+        nombre: form.nombre.value,
+        telefono: form.telefono.value,
+        email: form.email.value,
+        tipo: form.tipo.value,
+        personas: form.personas.value,
+        fecha: form.fecha.value,
+        mensaje: form.mensaje.value,
+        _subject: 'Nueva solicitud de presupuesto - El Puerto Valencia',
+        _replyto: form.email.value,
+      };
+
+      fetch('https://formsubmit.co/ajax/info@elpuertovalencia.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(() => {
+        btn.textContent = '✅ ¡Solicitud enviada! Te contactamos pronto';
+        btn.style.background = '#2e7d32';
+        form.reset();
+      })
+      .catch(() => {
+        btn.textContent = '❌ Error al enviar. Llámanos al 644 044 860';
+        btn.style.background = '#c62828';
+        btn.disabled = false;
+      });
     }
 
     /* ---- NAV SHADOW ---- */
