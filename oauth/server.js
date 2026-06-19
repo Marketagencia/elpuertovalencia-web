@@ -44,9 +44,7 @@ const server = http.createServer((req, res) => {
               var msg = 'authorization:github:success:' + JSON.stringify({token: token, provider: 'github'});
               if (window.opener) {
                 window.opener.postMessage(msg, '*');
-                setTimeout(function(){ window.close(); }, 1000);
               } else {
-                localStorage.setItem('decap-token', token);
                 window.location = ${JSON.stringify(ORIGIN + '/admin/')};
               }
             })();
