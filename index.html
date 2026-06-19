@@ -3,11 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Restaurante Puerto Valencia | Eventos, Despedidas y Celebraciones</title>
-  <meta name="description" content="Celebra tu despedida de soltero/a, cumpleaños o comida de empresa en Restaurante Puerto Valencia, junto a la Marina de Valencia. Hasta 300 personas, varios salones, terraza, DJ, charanga y espectáculos." />
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- SEO primario -->
+  <title>El Puerto Valencia | Despedidas, Cumpleaños y Eventos de Empresa en Valencia</title>
+  <meta name="description" content="Nº1 en despedidas de soltera, cumpleaños y eventos de empresa en Valencia. Junto a la Marina, terraza de 200 m², hasta 300 personas, DJ, charanga y espectáculos. ¡Solicita presupuesto gratis!" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://elpuertovalencia.com/" />
+
+  <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://elpuertovalencia.com/" />
+  <meta property="og:title" content="El Puerto Valencia | Despedidas, Cumpleaños y Eventos en Valencia" />
+  <meta property="og:description" content="Nº1 en despedidas de soltera, cumpleaños y eventos de empresa junto a la Marina de Valencia. Terraza 200 m², hasta 300 personas, DJ y espectáculos." />
+  <meta property="og:image" content="https://elpuertovalencia.com/hero-bg.jpg" />
+  <meta property="og:locale" content="es_ES" />
+  <meta property="og:site_name" content="El Puerto Valencia" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="El Puerto Valencia | Despedidas y Eventos en Valencia" />
+  <meta name="twitter:description" content="Nº1 en despedidas, cumpleaños y eventos de empresa junto a la Marina de Valencia." />
+  <meta name="twitter:image" content="https://elpuertovalencia.com/hero-bg.jpg" />
+
+  <!-- Datos estructurados JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "El Puerto Valencia",
+    "description": "Restaurante y espacio de eventos junto a la Marina de Valencia. Especialistas en despedidas, cumpleaños y eventos de empresa.",
+    "url": "https://elpuertovalencia.com",
+    "telephone": "+34644044860",
+    "email": "info@elpuertovalencia.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Valencia",
+      "addressRegion": "Comunitat Valenciana",
+      "addressCountry": "ES"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 39.4561,
+      "longitude": -0.3212
+    },
+    "image": "https://elpuertovalencia.com/hero-bg.jpg",
+    "priceRange": "€€",
+    "servesCuisine": "Española",
+    "hasMap": "https://maps.google.com/?q=Marina+de+Valencia",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "reviewCount": "1"
+    }
+  }
+  </script>
+
+  <!-- Performance: preconnect a Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Google Fonts: no bloquea el render -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" /></noscript>
+
+  <!-- Preload imagen hero (LCP) -->
+  <link rel="preload" as="image" href="hero-bg.jpg" fetchpriority="high" />
 
   <style>
     /* ===================== RESET & BASE ===================== */
@@ -668,7 +729,7 @@
 
   <!-- ==================== NAV ==================== -->
   <nav>
-    <div class="nav-logo"><img src="logo.png" alt="El Puerto Valencia - Restaurant & Show" /></div>
+    <div class="nav-logo"><img src="logo.png" alt="El Puerto Valencia - Restaurant & Show" width="120" height="60" /></div>
     <a href="#contacto" class="btn btn-primary nav-cta">Solicitar presupuesto</a>
     <button class="nav-hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -961,7 +1022,7 @@
 
   <!-- ==================== FOOTER ==================== -->
   <footer>
-    <div class="footer-logo"><img src="logo.png" alt="El Puerto Valencia - Restaurant & Show" /></div>
+    <div class="footer-logo"><img src="logo.png" alt="El Puerto Valencia - Restaurant & Show" width="120" height="60" loading="lazy" /></div>
     <div class="footer-sep"></div>
     <p>📍 Junto a la Marina de Valencia</p>
     <p>📞 <a href="tel:+34644044860" style="color:var(--dorado)">+34 644 044 860</a></p>
