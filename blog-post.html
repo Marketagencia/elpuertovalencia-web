@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog | El Puerto Valencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--azul-marino:#12003e;--azul-medio:#2b0080;--dorado:#ff5c35;--rosa:#e91e8c;--blanco:#ffffff;--gris-claro:#f4f0ff;--gris-texto:#444444;--radio:12px}
+    body{font-family:'Inter',sans-serif;color:var(--azul-marino);background:var(--blanco)}
+    h1,h2,h3{font-family:'Playfair Display',serif;line-height:1.2}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:760px;margin:0 auto;padding:0 24px}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;background:rgba(10,22,40,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,0.2)}
+    .nav-logo img{height:48px;width:auto}
+    .nav-back{color:rgba(255,255,255,0.8);font-size:0.9rem;display:flex;align-items:center;gap:6px}
+    .nav-back:hover{color:#fff}
+
+    .post-hero{width:100%;height:380px;object-fit:cover;display:block;margin-top:80px}
+    .post-hero-placeholder{width:100%;height:200px;background:linear-gradient(135deg,var(--azul-medio),var(--rosa));margin-top:80px}
+
+    .post-content{padding:48px 0 80px}
+    .post-meta{display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+    .post-date-tag{background:linear-gradient(135deg,var(--dorado),var(--rosa));color:#fff;font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:999px}
+    .post-content h1{font-size:clamp(1.8rem,4vw,2.6rem);color:var(--azul-marino);margin-bottom:28px;line-height:1.15}
+
+    .post-body{font-size:1.05rem;line-height:1.8;color:var(--gris-texto)}
+    .post-body h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--azul-marino);margin:36px 0 14px}
+    .post-body h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--azul-marino);margin:28px 0 10px}
+    .post-body p{margin-bottom:18px}
+    .post-body ul,.post-body ol{padding-left:24px;margin-bottom:18px}
+    .post-body li{margin-bottom:6px}
+    .post-body strong{color:var(--azul-marino)}
+    .post-body a{color:var(--dorado);text-decoration:underline}
+    .post-body img{max-width:100%;border-radius:var(--radio);margin:24px 0}
+    .post-body blockquote{border-left:4px solid var(--rosa);padding:12px 20px;background:var(--gris-claro);border-radius:0 8px 8px 0;margin:24px 0;font-style:italic}
+
+    .post-cta{background:linear-gradient(135deg,var(--azul-marino),var(--azul-medio));border-radius:var(--radio);padding:40px;text-align:center;margin:48px 0}
+    .post-cta h3{color:#fff;font-size:1.4rem;margin-bottom:10px}
+    .post-cta p{color:rgba(255,255,255,0.75);margin-bottom:24px}
+    .post-cta a{display:inline-block;padding:14px 32px;border-radius:50px;background:linear-gradient(135deg,var(--dorado),var(--rosa));color:#fff;font-weight:600}
+
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--dorado);font-weight:600;margin-bottom:32px;font-size:0.9rem}
+
+    .loading{text-align:center;padding:100px 24px;color:var(--gris-texto)}
+
+    footer{background:var(--azul-marino);padding:40px 24px;text-align:center;border-top:1px solid rgba(201,168,76,0.25)}
+    footer p{color:rgba(255,255,255,0.5);font-size:0.88rem}
+    .footer-sep{width:40px;height:3px;background:linear-gradient(90deg,var(--dorado),var(--rosa));margin:16px auto;border-radius:2px}
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo"><img src="logo.png" alt="El Puerto Valencia" width="120" height="60" /></div>
+    <a href="blog.html" class="nav-back">← Blog</a>
+  </nav>
+
+  <div id="post-hero"></div>
+
+  <section>
+    <div class="container">
+      <div id="post-content" class="post-content">
+        <div class="loading">Cargando artículo...</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-sep"></div>
+    <p>© 2026 El Puerto Valencia · <a href="index.html" style="color:rgba(255,255,255,0.5)">Volver a la web</a></p>
+  </footer>
+
+  <script src="https://unpkg.com/marked@9/marked.min.js"></script>
+  <script>
+    const REPO = 'Marketagencia/elpuertovalencia-web';
+    const BRANCH = 'main';
+
+    function formatDate(str) {
+      const d = new Date(str);
+      return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function parseFrontMatter(text) {
+      const match = text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+      if (!match) return { meta: {}, body: text };
+      const meta = {};
+      match[1].split('\n').forEach(line => {
+        const [k, ...v] = line.split(':');
+        if (k) meta[k.trim()] = v.join(':').trim().replace(/^"|"$/g, '');
+      });
+      return { meta, body: match[2] };
+    }
+
+    async function loadPost() {
+      const params = new URLSearchParams(window.location.search);
+      const filename = params.get('post');
+      if (!filename) { window.location = 'blog.html'; return; }
+
+      try {
+        const res = await fetch(`https://raw.githubusercontent.com/${REPO}/${BRANCH}/posts/${filename}`);
+        if (!res.ok) throw new Error();
+        const text = await res.text();
+        const { meta, body } = parseFrontMatter(text);
+
+        document.title = `${meta.title || 'Artículo'} | El Puerto Valencia`;
+
+        // Hero image
+        const heroEl = document.getElementById('post-hero');
+        if (meta.image) {
+          heroEl.innerHTML = `<img class="post-hero" src="${meta.image}" alt="${meta.title}">`;
+        } else {
+          heroEl.innerHTML = `<div class="post-hero-placeholder"></div>`;
+        }
+
+        document.getElementById('post-content').innerHTML = `
+          <a class="back-link" href="blog.html">← Volver al blog</a>
+          <div class="post-meta">
+            <span class="post-date-tag">${formatDate(meta.date)}</span>
+          </div>
+          <h1>${meta.title || ''}</h1>
+          <div class="post-body">${marked.parse(body)}</div>
+          <div class="post-cta">
+            <h3>¿Listo para organizar tu evento?</h3>
+            <p>Solicita tu presupuesto gratuito y te lo preparamos en 24 horas.</p>
+            <a href="index.html#contacto">Solicitar presupuesto</a>
+          </div>
+        `;
+      } catch (e) {
+        document.getElementById('post-content').innerHTML = `
+          <a class="back-link" href="blog.html">← Volver al blog</a>
+          <p>No se pudo cargar el artículo.</p>
+        `;
+      }
+    }
+
+    loadPost();
+  </script>
+</body>
+</html>

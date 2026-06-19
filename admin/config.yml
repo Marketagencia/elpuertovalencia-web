@@ -1,0 +1,23 @@
+backend:
+  name: github
+  repo: Marketagencia/elpuertovalencia-web
+  branch: main
+  base_url: https://oauth.elpuertovalencia.com
+
+media_folder: "uploads"
+public_folder: "/uploads"
+
+locale: es
+
+collections:
+  - name: "blog"
+    label: "Artículos"
+    folder: "posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Título", name: "title", widget: "string"}
+      - {label: "Fecha de publicación", name: "date", widget: "datetime", format: "YYYY-MM-DD"}
+      - {label: "Imagen destacada", name: "image", widget: "image", required: false}
+      - {label: "Resumen (para la lista)", name: "excerpt", widget: "text"}
+      - {label: "Contenido", name: "body", widget: "markdown"}
