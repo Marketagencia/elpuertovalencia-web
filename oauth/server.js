@@ -38,18 +38,23 @@ const server = http.createServer((req, res) => {
       ghRes.on('end', () => {
         try {
           const { access_token } = JSON.parse(data);
-          const msg = JSON.stringify({ token: access_token, provider: 'github' });
           const html = `<!DOCTYPE html><html><body><script>
             (function(){
-              var msg = 'authorization:github:success:${msg.replace(/'/g,"\\'")}';
-              window.opener && window.opener.postMessage(msg, '${ORIGIN}');
-              setTimeout(function(){ window.close(); }, 500);
+              var token = ${JSON.stringify(access_token)};
+              var msg = 'authorization:github:success:' + JSON.stringify({token: token, provider: 'github'});
+              if (window.opener) {
+                window.opener.postMessage(msg, ${JSON.stringify(ORIGIN)});
+                setTimeout(function(){ window.close(); }, 1000);
+              } else {
+                localStorage.setItem('decap-token', token);
+                window.location = ${JSON.stringify(ORIGIN + '/admin/')};
+              }
             })();
           </script></body></html>`;
           res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': ORIGIN });
           res.end(html);
         } catch(e) {
-          res.writeHead(500); res.end('Error getting token');
+          res.writeHead(500); res.end('Error getting token: ' + e.message);
         }
       });
     });
