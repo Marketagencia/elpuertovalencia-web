@@ -203,6 +203,67 @@
     }
     .hero-btns { display: flex; flex-wrap: wrap; gap: 14px; }
 
+    /* Tarjetas flotantes top-right */
+    .hero-float-cards {
+      position: absolute;
+      top: 110px;
+      right: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 10;
+    }
+    .hero-float-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(18,0,62,0.55);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 14px;
+      padding: 12px 18px;
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 500;
+      min-width: 210px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      opacity: 0;
+      transform: translateX(40px);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hero-float-card:hover {
+      transform: translateX(0) translateY(-3px) !important;
+      box-shadow: 0 14px 40px rgba(233,30,140,0.3);
+    }
+    .hero-float-card.visible {
+      animation: slideInRight 0.6s ease forwards;
+    }
+    .hero-float-card:nth-child(1) { animation-delay: 0.2s; }
+    .hero-float-card:nth-child(2) { animation-delay: 0.45s; }
+    .hero-float-card:nth-child(3) { animation-delay: 0.7s; }
+    .hero-float-icon {
+      font-size: 1.6rem;
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, rgba(233,30,140,0.4), rgba(255,92,53,0.4));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      animation: pulse-icon 3s ease-in-out infinite;
+    }
+    .hero-float-card:nth-child(2) .hero-float-icon { animation-delay: 1s; }
+    .hero-float-card:nth-child(3) .hero-float-icon { animation-delay: 2s; }
+    .hero-float-label { font-size: 0.72rem; color: rgba(255,255,255,0.55); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .hero-float-name { font-weight: 700; font-size: 0.95rem; }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pulse-icon {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.12); }
+    }
+
     .hero-badges {
       display: flex;
       gap: 32px;
@@ -710,6 +771,10 @@
       .modal-box { padding: 28px 20px; }
     }
 
+    @media (max-width: 900px) {
+      .hero-float-cards { display: none; }
+    }
+
     @media (max-width: 600px) {
       .eventos-grid        { grid-template-columns: 1fr; }
       .eventos-secundarios { grid-template-columns: repeat(2, 1fr); }
@@ -745,6 +810,32 @@
 
   <!-- ==================== HERO ==================== -->
   <section id="hero">
+
+    <!-- Tarjetas flotantes top-right -->
+    <div class="hero-float-cards">
+      <div class="hero-float-card">
+        <div class="hero-float-icon">🌅</div>
+        <div>
+          <div class="hero-float-label">Hasta 200 personas</div>
+          <div class="hero-float-name">Gran Terraza Exterior</div>
+        </div>
+      </div>
+      <div class="hero-float-card">
+        <div class="hero-float-icon">🏛️</div>
+        <div>
+          <div class="hero-float-label">Hasta 300 personas</div>
+          <div class="hero-float-name">Salones Interiores</div>
+        </div>
+      </div>
+      <div class="hero-float-card">
+        <div class="hero-float-icon">🎵</div>
+        <div>
+          <div class="hero-float-label">DJ · Charanga · Show</div>
+          <div class="hero-float-name">Zona de Fiesta</div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="hero-content">
         <span class="tag">🌊 Junto a la Marina de Valencia</span>
@@ -1180,6 +1271,11 @@
         btn.disabled = false;
       });
     }
+
+    /* ---- FLOAT CARDS ANIMATION ---- */
+    document.querySelectorAll('.hero-float-card').forEach(card => {
+      card.classList.add('visible');
+    });
 
     /* ---- NAV SHADOW ---- */
     window.addEventListener('scroll', () => {
