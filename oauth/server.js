@@ -15,8 +15,7 @@ const server = http.createServer((req, res) => {
   if (parsed.pathname === '/auth') {
     const params = qs.stringify({
       client_id: CLIENT_ID,
-      scope: 'repo,user',
-      redirect_uri: `https://${HOST}/callback`
+      scope: 'repo,user'
     });
     res.writeHead(302, { Location: `https://github.com/login/oauth/authorize?${params}` });
     res.end();
