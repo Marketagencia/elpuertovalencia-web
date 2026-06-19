@@ -38,17 +38,22 @@ const server = http.createServer((req, res) => {
       ghRes.on('end', () => {
         try {
           const { access_token } = JSON.parse(data);
-          const html = `<!DOCTYPE html><html><body><script>
+          const html = `<!DOCTYPE html><html><body>
+            <p id="s">Conectando con GitHub...</p>
+            <script>
             (function(){
               var token = ${JSON.stringify(access_token)};
+              if (!token) { document.getElementById('s').textContent = 'ERROR: no se recibio token de GitHub'; return; }
+              document.getElementById('s').textContent = 'Token OK. Enviando al panel...';
               var msg = 'authorization:github:success:' + JSON.stringify({token: token, provider: 'github'});
               if (window.opener) {
+                document.getElementById('s').textContent = 'Enviando mensaje al panel (opener OK)...';
                 window.opener.postMessage(msg, '*');
               } else {
-                window.location = ${JSON.stringify(ORIGIN + '/admin/')};
+                document.getElementById('s').textContent = 'ERROR: window.opener es null';
               }
             })();
-          </script></body></html>`;
+            </script></body></html>`;
           res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': ORIGIN });
           res.end(html);
         } catch(e) {
