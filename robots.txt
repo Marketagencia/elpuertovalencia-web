@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /oauth/
+
+Sitemap: https://elpuertovalencia.com/sitemap.xml

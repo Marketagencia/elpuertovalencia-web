@@ -27,35 +27,96 @@
 
   <!-- Datos estructurados JSON-LD -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Restaurant",
-    "name": "El Puerto Valencia",
-    "description": "Restaurante y espacio de eventos junto a la Marina de Valencia. Especialistas en despedidas, cumpleaños y eventos de empresa.",
-    "url": "https://elpuertovalencia.com",
-    "telephone": "+34644044860",
-    "email": "info@elpuertovalencia.com",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Valencia",
-      "addressRegion": "Comunitat Valenciana",
-      "addressCountry": "ES"
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "@id": "https://elpuertovalencia.com/#restaurant",
+      "name": "El Puerto Valencia",
+      "description": "Restaurante y espacio de eventos junto a la Marina de Valencia. Especialistas en despedidas de soltera, cumpleaños y eventos de empresa.",
+      "url": "https://elpuertovalencia.com",
+      "telephone": "+34644044860",
+      "email": "info@elpuertovalencia.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Marina de Valencia",
+        "addressLocality": "Valencia",
+        "addressRegion": "Comunitat Valenciana",
+        "postalCode": "46024",
+        "addressCountry": "ES"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 39.4561,
+        "longitude": -0.3212
+      },
+      "image": [
+        "https://elpuertovalencia.com/hero-bg.jpg",
+        "https://elpuertovalencia.com/charanga-bg.jpg",
+        "https://elpuertovalencia.com/espectaculo-bg.jpg"
+      ],
+      "logo": "https://elpuertovalencia.com/logo.png",
+      "priceRange": "€€",
+      "servesCuisine": "Española",
+      "hasMap": "https://maps.google.com/?q=El+Puerto+Valencia+Marina",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "13:00",
+          "closes": "23:00"
+        }
+      ],
+      "amenityFeature": [
+        {"@type": "LocationFeatureSpecification", "name": "Terraza", "value": true},
+        {"@type": "LocationFeatureSpecification", "name": "DJ", "value": true},
+        {"@type": "LocationFeatureSpecification", "name": "Espectáculos en vivo", "value": true},
+        {"@type": "LocationFeatureSpecification", "name": "Aparcamiento cercano", "value": true}
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "bestRating": "5",
+        "reviewCount": "1"
+      },
+      "sameAs": [
+        "https://www.instagram.com/elpuertovalencia",
+        "https://www.facebook.com/elpuertovalencia"
+      ]
     },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 39.4561,
-      "longitude": -0.3212
+    {
+      "@context": "https://schema.org",
+      "@type": "EventVenue",
+      "name": "El Puerto Valencia – Salones de Eventos",
+      "description": "Espacio para despedidas, cumpleaños y eventos de empresa. Capacidad hasta 300 personas, terraza 200 m², DJ y animación.",
+      "url": "https://elpuertovalencia.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Valencia",
+        "addressRegion": "Comunitat Valenciana",
+        "addressCountry": "ES"
+      },
+      "maximumAttendeeCapacity": 300
     },
-    "image": "https://elpuertovalencia.com/hero-bg.jpg",
-    "priceRange": "€€",
-    "servesCuisine": "Española",
-    "hasMap": "https://maps.google.com/?q=Marina+de+Valencia",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "5",
-      "reviewCount": "1"
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://elpuertovalencia.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://elpuertovalencia.com/blog.html"
+        }
+      ]
     }
-  }
+  ]
   </script>
 
   <!-- Performance: preconnect a Google Fonts -->
