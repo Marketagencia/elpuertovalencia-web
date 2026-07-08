@@ -278,6 +278,25 @@
   .menu-header > div[style*="gap"] { gap: 6px !important; }
   .menu-body { padding: 18px 20px 20px; }
 }
+
+/* ===== BLOG PREVIEW (HOME) ===== */
+#blog-preview { background: var(--blanco); }
+#blog-preview .section-title { text-align: center; }
+#blog-preview .section-sub { text-align: center; margin: 0 auto 48px; }
+.blog-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; margin-bottom: 44px; }
+.bp-card { background: #fff; border-radius: var(--radio); overflow: hidden; box-shadow: var(--sombra); transition: transform 0.25s; display: flex; flex-direction: column; }
+.bp-card:hover { transform: translateY(-5px); }
+.bp-img { height: 190px; background: linear-gradient(135deg, var(--azul-medio), var(--rosa)); overflow: hidden; position: relative; }
+.bp-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bp-date { position: absolute; bottom: 12px; left: 12px; background: rgba(18,0,62,0.8); color: #fff; font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; backdrop-filter: blur(4px); }
+.bp-body { padding: 22px 24px; flex: 1; display: flex; flex-direction: column; }
+.bp-body h3 { font-size: 1.1rem; margin-bottom: 8px; color: var(--azul-marino); line-height: 1.35; }
+.bp-body p { font-size: 0.88rem; color: var(--gris-texto); line-height: 1.6; flex: 1; margin-bottom: 14px; }
+.bp-body a.bp-read-more { display: inline-block; color: var(--dorado); font-weight: 600; font-size: 0.86rem; }
+.bp-body a.bp-read-more:hover { color: var(--rosa); }
+.blog-preview-loading { text-align: center; padding: 40px; color: var(--gris-texto); grid-column: 1/-1; }
+.blog-preview-cta { text-align: center; }
+@media (max-width: 600px) { .blog-preview-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -597,6 +616,21 @@
           <button type="submit" class="btn btn-primary form-submit">Solicitar presupuesto gratuito →</button>
           <p class="form-nota">🔒 Tus datos están protegidos conforme al RGPD (UE) 2016/679 y la LOPD-GDD.</p>
         </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== BLOG PREVIEW ==================== -->
+  <section id="blog-preview">
+    <div class="container">
+      <span class="tag" style="display:block;text-align:center;margin-left:auto;margin-right:auto;width:fit-content;">📝 Nuestro blog</span>
+      <h2 class="section-title">Ideas para tu próxima celebración</h2>
+      <p class="section-sub">Guías, inspiración y consejos para organizar el evento perfecto en Valencia.</p>
+      <div id="blog-preview-grid" class="blog-preview-grid">
+        <div class="blog-preview-loading">Cargando artículos...</div>
+      </div>
+      <div class="blog-preview-cta">
+        <a href="blog.html" class="btn btn-dark">Ver todos los artículos →</a>
       </div>
     </div>
   </section>
@@ -1130,6 +1164,74 @@
         document.getElementById('cookie-banner').style.display = 'flex';
       }, 800);
     }
+
+    /* ---- BLOG PREVIEW (HOME) ---- */
+    (function () {
+      const REPO = 'Marketagencia/elpuertovalencia-web';
+      const BRANCH = 'main';
+      const MAX_POSTS = 3;
+
+      function bpFormatDate(str) {
+        const d = new Date(str);
+        return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+
+      function bpParseFrontMatter(text) {
+        const match = text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+        if (!match) return { meta: {}, body: text };
+        const meta = {};
+        match[1].split('\n').forEach(line => {
+          const [k, ...v] = line.split(':');
+          if (k) meta[k.trim()] = v.join(':').trim().replace(/^"|"$/g, '');
+        });
+        return { meta, body: match[2] };
+      }
+
+      async function loadBlogPreview() {
+        const grid = document.getElementById('blog-preview-grid');
+        if (!grid) return;
+        try {
+          const res = await fetch(`https://api.github.com/repos/${REPO}/contents/posts?ref=${BRANCH}`);
+          if (!res.ok) throw new Error('No se pudieron cargar los artículos');
+          const files = await res.json();
+          const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse().slice(0, MAX_POSTS);
+
+          if (mdFiles.length === 0) {
+            grid.innerHTML = '';
+            document.getElementById('blog-preview').style.display = 'none';
+            return;
+          }
+
+          const posts = await Promise.all(mdFiles.map(async f => {
+            const r = await fetch(f.download_url);
+            const text = await r.text();
+            return { ...bpParseFrontMatter(text), filename: f.name };
+          }));
+
+          grid.innerHTML = posts.map(p => {
+            const img = p.meta.image
+              ? `<img src="${p.meta.image}" alt="${p.meta.title}" loading="lazy">`
+              : '';
+            return `
+              <div class="bp-card">
+                <div class="bp-img">
+                  ${img}
+                  <span class="bp-date">${bpFormatDate(p.meta.date)}</span>
+                </div>
+                <div class="bp-body">
+                  <h3>${p.meta.title || 'Sin título'}</h3>
+                  <p>${p.meta.excerpt || ''}</p>
+                  <a class="bp-read-more" href="blog-post.html?post=${p.filename}">Leer artículo →</a>
+                </div>
+              </div>`;
+          }).join('');
+        } catch (e) {
+          document.getElementById('blog-preview').style.display = 'none';
+        }
+      }
+
+      loadBlogPreview();
+    })();
   </script>
 
 </body>
