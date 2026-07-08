@@ -79,9 +79,6 @@
 
   <script src="https://unpkg.com/marked@9/marked.min.js"></script>
   <script>
-    const REPO = 'Marketagencia/elpuertovalencia-web';
-    const BRANCH = 'main';
-
     function formatDate(str) {
       const d = new Date(str);
       return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -103,8 +100,11 @@
       const filename = params.get('post');
       if (!filename) { window.location = 'blog.html'; return; }
 
+      const postUrl = `https://elpuertovalencia.com/blog-post.html?post=${encodeURIComponent(filename)}`;
+      document.getElementById('canonical-link').setAttribute('href', postUrl);
+
       try {
-        const res = await fetch(`https://raw.githubusercontent.com/${REPO}/${BRANCH}/posts/${filename}`);
+        const res = await fetch(`posts/${filename}`);
         if (!res.ok) throw new Error();
         const text = await res.text();
         const { meta, body } = parseFrontMatter(text);
@@ -113,8 +113,6 @@
         if (meta.excerpt) {
           document.getElementById('meta-desc').setAttribute('content', meta.excerpt);
         }
-        const postUrl = `https://elpuertovalencia.com/blog-post.html?post=${encodeURIComponent(filename)}`;
-        document.getElementById('canonical-link').setAttribute('href', postUrl);
 
         const imageUrl = meta.image ? `https://elpuertovalencia.com${meta.image}` : undefined;
         const ld = document.createElement('script');
