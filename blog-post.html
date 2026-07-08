@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog | El Puerto Valencia</title>
+  <meta name="description" content="Ideas, guías y novedades para organizar despedidas, cumpleaños y eventos de empresa en Valencia." id="meta-desc" />
+  <link rel="canonical" href="https://elpuertovalencia.com/blog-post.html" id="canonical-link" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -108,6 +110,33 @@
         const { meta, body } = parseFrontMatter(text);
 
         document.title = `${meta.title || 'Artículo'} | El Puerto Valencia`;
+        if (meta.excerpt) {
+          document.getElementById('meta-desc').setAttribute('content', meta.excerpt);
+        }
+        const postUrl = `https://elpuertovalencia.com/blog-post.html?post=${encodeURIComponent(filename)}`;
+        document.getElementById('canonical-link').setAttribute('href', postUrl);
+
+        const imageUrl = meta.image ? `https://elpuertovalencia.com${meta.image}` : undefined;
+        const ld = document.createElement('script');
+        ld.type = 'application/ld+json';
+        ld.textContent = JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": meta.title || '',
+          "description": meta.excerpt || '',
+          "datePublished": meta.date || '',
+          "dateModified": meta.date || '',
+          "image": imageUrl,
+          "url": postUrl,
+          "mainEntityOfPage": { "@type": "WebPage", "@id": postUrl },
+          "publisher": {
+            "@type": "Organization",
+            "name": "El Puerto Valencia",
+            "logo": { "@type": "ImageObject", "url": "https://elpuertovalencia.com/logo.png" }
+          },
+          "author": { "@type": "Organization", "name": "El Puerto Valencia" }
+        });
+        document.head.appendChild(ld);
 
         // Hero image
         const heroEl = document.getElementById('post-hero');
