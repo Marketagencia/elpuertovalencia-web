@@ -1,0 +1,36 @@
+name: Build blog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "posts/**"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install markdown pyyaml
+
+      - name: Generate static blog pages
+        run: python3 scripts/build_blog.py
+
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add blog/ blog.html index.html sitemap.xml
+          git diff --cached --quiet || git commit -m "Regenerar páginas estáticas del blog [skip ci]"
+          git push
