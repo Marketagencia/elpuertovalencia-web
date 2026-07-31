@@ -7,6 +7,12 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://elpuertovalencia.com/comidas-de-empresa/</loc>
+    <lastmod>2026-07-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://elpuertovalencia.com/blog.html</loc>
     <lastmod>2026-07-09</lastmod>
     <changefreq>weekly</changefreq>
