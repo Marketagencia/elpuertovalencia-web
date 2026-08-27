@@ -98,7 +98,8 @@
     .evento-body{padding:20px 20px}
     .evento-body h3{font-size:1.05rem;margin-bottom:8px}
     .evento-body p{font-size:0.88rem}
-    @media (max-width:600px){.eventos-grid{grid-template-columns:1fr}}
+    .img-comida-empresa{background-image:url('comida-empresa-bg.jpg');background-size:cover;background-position:center 30%}
+    @media (max-width:600px){.eventos-grid{grid-template-columns:1fr}.img-comida-empresa{background-image:url('comida-empresa-bg-mobile.jpg')}}
 
     /* ===== BTN VER MENÚ ===== */
     .btn-ver-menu{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:8px 16px;background:linear-gradient(135deg,var(--dorado),var(--rosa));color:#fff;border:none;border-radius:50px;font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.03em;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 4px 14px rgba(233,30,140,0.35)}
@@ -222,8 +223,7 @@
 
       <div class="eventos-grid">
         <div class="evento-card featured">
-          <div class="evento-img">
-            <span>🍽️</span>
+          <div class="evento-img img-comida-empresa">
             <span class="featured-badge">🎺 Charanga y tardeo</span>
             <div class="precio-badge">
               <span class="precio-desde">desde</span>
