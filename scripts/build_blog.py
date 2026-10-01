@@ -195,6 +195,7 @@ POST_TEMPLATE = """<!DOCTYPE html>
 
   <footer>
     <div class="footer-sep"></div>
+    <p>Organización de despedidas en Valencia: <a href="https://creadespedidas.com/" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.7)">Crea Despedidas</a></p>
     <p>© 2026 El Puerto Valencia · <a href="../../index.html" style="color:rgba(255,255,255,0.5)">Volver a la web</a></p>
   </footer>
 </body>
