@@ -148,7 +148,8 @@
     footer a{color:rgba(255,102,0,0.7)}
 
     /* MURCIÉLAGO */
-    .bat{position:fixed;z-index:9999;pointer-events:none;font-size:3rem;filter:drop-shadow(0 0 10px rgba(255,50,0,1)) drop-shadow(0 0 20px rgba(200,0,0,0.8));}
+    @keyframes batPulse{0%,100%{filter:drop-shadow(0 0 12px #ff2200) drop-shadow(0 0 28px #cc0000) drop-shadow(0 0 50px rgba(200,0,0,0.6))}50%{filter:drop-shadow(0 0 20px #ff6600) drop-shadow(0 0 40px #ff2200) drop-shadow(0 0 70px rgba(255,100,0,0.8))}}
+    .bat{position:fixed;z-index:9999;pointer-events:none;font-size:5rem;animation:batPulse 1.8s ease-in-out infinite;}
 
     /* TELARAÑAS decorativas */
     .web-corner{position:fixed;pointer-events:none;z-index:1;opacity:0.15}
@@ -415,6 +416,16 @@
       bat.style.left = (bx - 24) + 'px';
       bat.style.top  = (by - 24) + 'px';
       bat.style.transform = `scaleX(${mouseRight ? -1 : 1}) scaleY(${flap})`;
+
+        // Estela
+      if (Math.random() < 0.18) {
+        const trail = document.createElement('div');
+        trail.textContent = '🦇';
+        trail.style.cssText = `position:fixed;z-index:9998;pointer-events:none;font-size:${1.2 + Math.random()}rem;left:${bx - 12}px;top:${by - 12}px;opacity:0.6;transition:opacity 0.8s,transform 0.8s;transform:scale(1)`;
+        document.body.appendChild(trail);
+        requestAnimationFrame(() => { trail.style.opacity = '0'; trail.style.transform = 'scale(0.2)'; });
+        setTimeout(() => trail.remove(), 900);
+      }
 
       requestAnimationFrame(animateBat);
     }
