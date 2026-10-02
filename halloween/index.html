@@ -365,28 +365,48 @@
   <script>
     const bat = document.getElementById('bat');
     let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-    let bx = mx, by = my;
+    let bx = window.innerWidth * 0.3, by = window.innerHeight * 0.4;
     let vx = 0, vy = 0;
     let flip = false;
+    const MIN_DIST = 110; // ~3cm en pantalla típica
 
     document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
     function animateBat() {
-      const dx = mx - bx;
-      const dy = my - by;
-      vx += dx * 0.04;
-      vy += dy * 0.04;
-      vx *= 0.88;
-      vy *= 0.88;
+      let dx = mx - bx;
+      let dy = my - by;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // Si está demasiado cerca, alejarse suavemente
+      if (dist < MIN_DIST && dist > 0) {
+        const push = (MIN_DIST - dist) / MIN_DIST;
+        vx -= (dx / dist) * push * 2.5;
+        vy -= (dy / dist) * push * 2.5;
+      } else {
+        // Seguir al ratón muy lentamente
+        vx += dx * 0.008;
+        vy += dy * 0.008;
+      }
+
+      // Añadir algo de movimiento ondulante para que vuele de forma natural
+      vx += Math.sin(Date.now() / 900) * 0.3;
+      vy += Math.cos(Date.now() / 1100) * 0.2;
+
+      // Fricción alta para movimiento lento y suave
+      vx *= 0.94;
+      vy *= 0.94;
+
       bx += vx;
       by += vy;
 
-      // Voltear según dirección
-      if (vx < -0.5) flip = true;
-      if (vx > 0.5) flip = false;
+      // Mantener dentro de la ventana
+      bx = Math.max(20, Math.min(window.innerWidth - 20, bx));
+      by = Math.max(20, Math.min(window.innerHeight - 20, by));
 
-      // Aleteo: escalar Y para simular aleteo
-      const flap = Math.sin(Date.now() / 120) * 0.3 + 0.85;
+      if (vx < -0.3) flip = true;
+      if (vx > 0.3) flip = false;
+
+      const flap = Math.sin(Date.now() / 150) * 0.25 + 0.85;
 
       bat.style.left = (bx - 16) + 'px';
       bat.style.top = (by - 16) + 'px';
