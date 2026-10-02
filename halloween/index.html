@@ -365,12 +365,21 @@
   <script>
     const bat = document.getElementById('bat');
     let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let prevMx = mx;
     let bx = window.innerWidth * 0.3, by = window.innerHeight * 0.4;
     let vx = 0, vy = 0;
     let flip = false;
     const MIN_DIST = 110; // ~3cm
 
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    document.addEventListener('mousemove', e => {
+      prevMx = mx;
+      mx = e.clientX;
+      my = e.clientY;
+      // Voltear según dirección del ratón
+      const mdx = mx - prevMx;
+      if (mdx > 1) flip = false;
+      else if (mdx < -1) flip = true;
+    });
 
     function animateBat() {
       const dx = mx - bx;
@@ -406,9 +415,6 @@
 
       bx = Math.max(20, Math.min(window.innerWidth - 20, bx));
       by = Math.max(20, Math.min(window.innerHeight - 20, by));
-
-      if (vx < -0.3) flip = true;
-      if (vx > 0.3) flip = false;
 
       const flap = Math.sin(Date.now() / 130) * 0.28 + 0.85;
 
