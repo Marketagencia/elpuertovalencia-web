@@ -148,7 +148,7 @@
     footer a{color:rgba(255,102,0,0.7)}
 
     /* MURCIÉLAGO */
-    .bat{position:fixed;z-index:9999;pointer-events:none;font-size:2rem;filter:drop-shadow(0 0 6px rgba(200,0,0,0.8));transition:transform 0.1s}
+    .bat{position:fixed;z-index:9999;pointer-events:none;font-size:3rem;filter:drop-shadow(0 0 10px rgba(255,50,0,1)) drop-shadow(0 0 20px rgba(200,0,0,0.8));}
 
     /* TELARAÑAS decorativas */
     .web-corner{position:fixed;pointer-events:none;z-index:1;opacity:0.15}
@@ -368,48 +368,52 @@
     let bx = window.innerWidth * 0.3, by = window.innerHeight * 0.4;
     let vx = 0, vy = 0;
     let flip = false;
-    const MIN_DIST = 110; // ~3cm en pantalla típica
+    const MIN_DIST = 110; // ~3cm
 
     document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
     function animateBat() {
-      let dx = mx - bx;
-      let dy = my - by;
+      const dx = mx - bx;
+      const dy = my - by;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
-      // Si está demasiado cerca, alejarse suavemente
-      if (dist < MIN_DIST && dist > 0) {
-        const push = (MIN_DIST - dist) / MIN_DIST;
-        vx -= (dx / dist) * push * 2.5;
-        vy -= (dy / dist) * push * 2.5;
+      if (dist > MIN_DIST) {
+        // Volar hacia el ratón sin prisa: aceleración suave
+        const speed = 0.012;
+        vx += (dx / dist) * Math.min(dist, 200) * speed;
+        vy += (dy / dist) * Math.min(dist, 200) * speed;
       } else {
-        // Seguir al ratón muy lentamente
-        vx += dx * 0.008;
-        vy += dy * 0.008;
+        // Ya está cerca: frenar y mantenerse a distancia mínima
+        vx *= 0.8;
+        vy *= 0.8;
       }
 
-      // Añadir algo de movimiento ondulante para que vuele de forma natural
-      vx += Math.sin(Date.now() / 900) * 0.3;
-      vy += Math.cos(Date.now() / 1100) * 0.2;
+      // Ondulación natural en el vuelo
+      vx += Math.sin(Date.now() / 800) * 0.25;
+      vy += Math.cos(Date.now() / 1000) * 0.18;
 
-      // Fricción alta para movimiento lento y suave
-      vx *= 0.94;
-      vy *= 0.94;
+      // Límite de velocidad máxima (vuelo lento)
+      const speed = Math.sqrt(vx * vx + vy * vy);
+      const maxSpeed = 3.5;
+      if (speed > maxSpeed) { vx = (vx / speed) * maxSpeed; vy = (vy / speed) * maxSpeed; }
+
+      // Fricción
+      vx *= 0.96;
+      vy *= 0.96;
 
       bx += vx;
       by += vy;
 
-      // Mantener dentro de la ventana
       bx = Math.max(20, Math.min(window.innerWidth - 20, bx));
       by = Math.max(20, Math.min(window.innerHeight - 20, by));
 
       if (vx < -0.3) flip = true;
       if (vx > 0.3) flip = false;
 
-      const flap = Math.sin(Date.now() / 150) * 0.25 + 0.85;
+      const flap = Math.sin(Date.now() / 130) * 0.28 + 0.85;
 
-      bat.style.left = (bx - 16) + 'px';
-      bat.style.top = (by - 16) + 'px';
+      bat.style.left = (bx - 24) + 'px';
+      bat.style.top  = (by - 24) + 'px';
       bat.style.transform = `scaleX(${flip ? -1 : 1}) scaleY(${flap})`;
 
       requestAnimationFrame(animateBat);
