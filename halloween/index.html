@@ -371,15 +371,7 @@
     let flip = false;
     const MIN_DIST = 110; // ~3cm
 
-    document.addEventListener('mousemove', e => {
-      prevMx = mx;
-      mx = e.clientX;
-      my = e.clientY;
-      // Voltear según dirección del ratón
-      const mdx = mx - prevMx;
-      if (mdx > 1) flip = false;
-      else if (mdx < -1) flip = true;
-    });
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
     function animateBat() {
       const dx = mx - bx;
@@ -416,11 +408,13 @@
       bx = Math.max(20, Math.min(window.innerWidth - 20, bx));
       by = Math.max(20, Math.min(window.innerHeight - 20, by));
 
+      // Mirar siempre hacia el ratón
+      const facingLeft = mx < bx;
       const flap = Math.sin(Date.now() / 130) * 0.28 + 0.85;
 
       bat.style.left = (bx - 24) + 'px';
       bat.style.top  = (by - 24) + 'px';
-      bat.style.transform = `scaleX(${flip ? -1 : 1}) scaleY(${flap})`;
+      bat.style.transform = `scaleX(${facingLeft ? -1 : 1}) scaleY(${flap})`;
 
       requestAnimationFrame(animateBat);
     }
