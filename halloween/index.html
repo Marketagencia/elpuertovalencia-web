@@ -408,13 +408,13 @@
       bx = Math.max(20, Math.min(window.innerWidth - 20, bx));
       by = Math.max(20, Math.min(window.innerHeight - 20, by));
 
-      // Mirar siempre hacia el ratón
-      const facingLeft = mx < bx;
+      // El emoji 🦇 mira a la izquierda por defecto → flipear cuando el ratón está a la derecha
+      const mouseRight = mx > bx;
       const flap = Math.sin(Date.now() / 130) * 0.28 + 0.85;
 
       bat.style.left = (bx - 24) + 'px';
       bat.style.top  = (by - 24) + 'px';
-      bat.style.transform = `scaleX(${facingLeft ? -1 : 1}) scaleY(${flap})`;
+      bat.style.transform = `scaleX(${mouseRight ? -1 : 1}) scaleY(${flap})`;
 
       requestAnimationFrame(animateBat);
     }
