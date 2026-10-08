@@ -27,6 +27,18 @@ SITE_URL = "https://elpuertovalencia.com"
 
 INTERNAL_LINK_RE = re.compile(r"blog-post\.html\?post=([\w.\-]+?)\.md")
 
+def img_tag(image, alt, prefix="", hero=False):
+    """<img> con WebP (si existe junto al original), dimensiones y carga diferida."""
+    src = f"{prefix}{image.lstrip('/')}" if prefix else image
+    attrs = 'class="post-hero" ' if hero else ""
+    load = 'fetchpriority="high" decoding="async"' if hero else 'loading="lazy" decoding="async"'
+    tag = f'<img {attrs}src="{src}" alt="{alt}" width="1344" height="768" {load}>'
+    if (ROOT / image.lstrip("/")).with_suffix(".webp").exists():
+        webp_src = str(Path(src).with_suffix(".webp"))
+        return f'<picture><source srcset="{webp_src}" type="image/webp">{tag}</picture>'
+    return tag
+
+
 MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"]
 
 
@@ -218,7 +230,7 @@ def build_post_page(post):
     url = f"{SITE_URL}/blog/{post['slug']}/"
 
     if image:
-        hero_html = f'<img class="post-hero" src="../../{image.lstrip("/")}" alt="{title}">'
+        hero_html = img_tag(image, title, prefix="../../", hero=True)
     else:
         hero_html = '<div class="post-hero-placeholder"></div>'
 
@@ -346,7 +358,7 @@ def build_blog_index(posts):
         excerpt = html.escape(meta.get("excerpt", ""))
         image = meta.get("image", "")
         if image:
-            img = f'<img src="{image}" alt="{title}" loading="lazy">'
+            img = img_tag(image, title)
         else:
             img = '<div class="no-img">📝</div>'
         cards.append(CARD_TEMPLATE.format(
@@ -408,7 +420,7 @@ def update_home_preview(posts, max_posts=3):
         title = html.escape(meta.get("title", "Sin título"))
         excerpt = html.escape(meta.get("excerpt", ""))
         image = meta.get("image", "")
-        img = f'<img src="{image}" alt="{title}" loading="lazy">' if image else ""
+        img = img_tag(image, title) if image else ""
         cards.append(HOME_CARD_TEMPLATE.format(
             img=img,
             date_human=format_date(meta.get("date", "")) if meta.get("date") else "",
