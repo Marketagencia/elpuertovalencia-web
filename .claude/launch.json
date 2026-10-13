@@ -1,0 +1,35 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static-site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8811"
+      ],
+      "port": 8811
+    },
+    {
+      "name": "crea-despedidas",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8822",
+        "--directory",
+        "/Users/pablosaez/web crea despedidas"
+      ],
+      "port": 8822
+    },
+    {
+      "name": "grupolisto",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "grupolisto/src/server.js"
+      ],
+      "port": 3100
+    }
+  ]
+}

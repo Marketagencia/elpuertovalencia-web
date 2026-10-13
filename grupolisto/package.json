@@ -1,0 +1,14 @@
+{
+  "name": "grupolisto",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GrupoListo - gestión de grupos y eventos para agencias (multiempresa)",
+  "type": "module",
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node src/seed.js",
+    "test": "node --test test/*.test.js",
+    "backup": "node src/backup.js"
+  }
+}
