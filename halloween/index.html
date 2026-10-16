@@ -171,6 +171,7 @@
     .web-tr{top:0;right:0;transform:scaleX(-1)}
 
     /* GOTAS de sangre animadas */
+    @keyframes pulseGift{0%,100%{box-shadow:0 0 24px rgba(255,180,0,0.6),0 0 0 0 rgba(255,180,0,0.4)}50%{box-shadow:0 0 40px rgba(255,180,0,0.9),0 0 20px 8px rgba(255,100,0,0.3)}}
     @keyframes drip{0%{transform:scaleY(0);opacity:1}80%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
     .sangre-drip{position:fixed;top:0;width:6px;background:linear-gradient(to bottom,var(--rojo-sangre),var(--rojo));border-radius:0 0 50% 50%;animation:drip 3s ease-in forwards;transform-origin:top center;pointer-events:none;z-index:1}
 
@@ -277,10 +278,11 @@
           <h3>Sesión DJ</h3>
           <p>Sesion DJ después de la cena para seguir la fiesta</p>
         </div>
-        <div class="incluye-item">
-          <span class="ico">🧛</span>
-          <h3>Copa de bienvenida</h3>
-          <p>Ven disfrazad@ y te invitamos a una copa</p>
+        <div class="incluye-item" style="position:relative;border:3px solid var(--dorado);box-shadow:0 0 24px rgba(255,180,0,0.6);animation:pulseGift 1.5s ease-in-out infinite">
+          <span class="ico">🎁</span>
+          <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff6600,#cc0000);color:#fff;font-size:0.7rem;font-weight:900;letter-spacing:0.12em;padding:4px 14px;border-radius:999px;text-transform:uppercase;white-space:nowrap">¡REGALO!</div>
+          <h3 style="color:var(--dorado);font-size:1.3rem;text-shadow:0 0 10px rgba(255,180,0,0.5)">🎁 REGALO</h3>
+          <p>Copa gratis para todos los que vengan disfrazados</p>
         </div>
       </div>
     </div>
