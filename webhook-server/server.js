@@ -1,34 +1,29 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const https = require('https');
 
 const app = express();
 app.use(express.json({ limit: '5mb' }));
 
 const BEARER_TOKEN = process.env.WEBHOOK_TOKEN || 'aseo_wh_3ebd747fde4a55a82161edd9eb2c4266';
-const SITE_DIR = process.env.SITE_DIR || '/site';
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_OWNER = process.env.GITHUB_OWNER || 'Marketagencia';
+const GITHUB_REPO = process.env.GITHUB_REPO || 'elpuertovalencia-web';
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook', async (req, res) => {
   const auth = req.headers['authorization'];
   if (auth !== `Bearer ${BEARER_TOKEN}`) {
-    console.log('Unauthorized webhook attempt');
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { event, title, slug, metaDescription, content_html, published_url } = req.body;
-
+  const { title, slug, metaDescription, content_html } = req.body;
   if (!slug || !content_html || !title) {
-    return res.status(400).json({ error: 'Missing required fields: title, slug, content_html' });
+    return res.status(400).json({ error: 'Faltan campos: title, slug, content_html' });
   }
 
-  try {
-    const articleDir = path.join(SITE_DIR, 'blog', slug);
-    fs.mkdirSync(articleDir, { recursive: true });
+  const today = new Date().toISOString().split('T')[0];
+  const canonicalUrl = `https://elpuertovalencia.com/blog/${slug}/`;
 
-    const today = new Date().toISOString().split('T')[0];
-    const canonicalUrl = `https://elpuertovalencia.com/blog/${slug}/`;
-
-    const html = `<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html lang="es">
 <head>
 <!-- Google tag (gtag.js) -->
@@ -41,31 +36,27 @@ app.post('/webhook', (req, res) => {
 </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${escapeHtml(title)} | El Puerto Valencia</title>
-  <meta name="description" content="${escapeHtml(metaDescription || '')}" />
+  <title>${esc(title)} | El Puerto Valencia</title>
+  <meta name="description" content="${esc(metaDescription || '')}" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="${canonicalUrl}" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="${canonicalUrl}" />
-  <meta property="og:title" content="${escapeHtml(title)} | El Puerto Valencia" />
-  <meta property="og:description" content="${escapeHtml(metaDescription || '')}" />
+  <meta property="og:title" content="${esc(title)} | El Puerto Valencia" />
+  <meta property="og:description" content="${esc(metaDescription || '')}" />
   <meta property="og:locale" content="es_ES" />
   <meta property="og:site_name" content="El Puerto Valencia" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": "${escapeJson(title)}",
-    "description": "${escapeJson(metaDescription || '')}",
+    "headline": "${escJ(title)}",
+    "description": "${escJ(metaDescription || '')}",
     "datePublished": "${today}",
     "dateModified": "${today}",
     "url": "${canonicalUrl}",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "${canonicalUrl}" },
-    "publisher": {
-      "@type": "Organization",
-      "name": "El Puerto Valencia",
-      "logo": { "@type": "ImageObject", "url": "https://elpuertovalencia.com/logo.png" }
-    },
+    "publisher": { "@type": "Organization", "name": "El Puerto Valencia", "logo": { "@type": "ImageObject", "url": "https://elpuertovalencia.com/logo.png" } },
     "author": { "@type": "Organization", "name": "El Puerto Valencia" }
   }
   </script>
@@ -98,8 +89,8 @@ app.post('/webhook', (req, res) => {
     .article-cta{background:linear-gradient(135deg,var(--azul-marino),var(--azul-medio));border-radius:16px;padding:40px;text-align:center;margin:48px 0}
     .article-cta h3{color:#fff;font-size:1.4rem;margin-bottom:12px}
     .article-cta p{color:rgba(255,255,255,0.75);margin-bottom:24px}
-    .btn{display:inline-block;padding:15px 32px;border-radius:50px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:transform 0.2s;background:linear-gradient(135deg,var(--dorado),var(--rosa));color:#fff}
-    .btn:hover{transform:translateY(-2px)}
+    .btn{display:inline-block;padding:15px 32px;border-radius:50px;font-weight:600;font-size:0.95rem;background:linear-gradient(135deg,var(--dorado),var(--rosa));color:#fff}
+    .btn:hover{opacity:0.9}
     .back-link{display:inline-flex;align-items:center;gap:8px;color:var(--dorado);font-size:0.9rem;font-weight:600;margin-bottom:40px}
     footer{background:var(--azul-marino);padding:48px 24px;text-align:center;border-top:1px solid rgba(201,168,76,0.25)}
     footer p{font-size:0.88rem;color:rgba(255,255,255,0.5);margin-bottom:4px}
@@ -117,7 +108,7 @@ app.post('/webhook', (req, res) => {
   <section class="article-hero">
     <div class="container">
       <span class="article-tag">Blog</span>
-      <h1>${escapeHtml(title)}</h1>
+      <h1>${esc(title)}</h1>
       <p class="article-meta">${today} · El Puerto Valencia</p>
     </div>
   </section>
@@ -142,24 +133,70 @@ app.post('/webhook', (req, res) => {
 </body>
 </html>`;
 
-    fs.writeFileSync(path.join(articleDir, 'index.html'), html, 'utf8');
+  try {
+    const filePath = `blog/${slug}/index.html`;
+    const content = Buffer.from(html, 'utf8').toString('base64');
 
-    console.log(`✅ Artículo creado: /blog/${slug}/`);
+    // Check if file exists (to get SHA for update)
+    let sha;
+    try {
+      const existing = await githubRequest('GET', `/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`);
+      sha = existing.sha;
+    } catch (e) { /* file doesn't exist yet, that's fine */ }
+
+    const body = {
+      message: `Auto-publicar artículo: ${title}`,
+      content,
+      ...(sha ? { sha } : {})
+    };
+
+    await githubRequest('PUT', `/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`, body);
+
+    console.log(`✅ Artículo publicado en GitHub: blog/${slug}/`);
     res.json({ success: true, url: canonicalUrl });
   } catch (err) {
-    console.error('Error al crear artículo:', err);
+    console.error('Error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
+function githubRequest(method, path, body) {
+  return new Promise((resolve, reject) => {
+    const data = body ? JSON.stringify(body) : null;
+    const req = https.request({
+      hostname: 'api.github.com',
+      path,
+      method,
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github+json',
+        'User-Agent': 'elpuerto-webhook',
+        'Content-Type': 'application/json',
+        ...(data ? { 'Content-Length': Buffer.byteLength(data) } : {})
+      }
+    }, (res) => {
+      let raw = '';
+      res.on('data', chunk => raw += chunk);
+      res.on('end', () => {
+        const json = JSON.parse(raw);
+        if (res.statusCode >= 400) reject(new Error(json.message || raw));
+        else resolve(json);
+      });
+    });
+    req.on('error', reject);
+    if (data) req.write(data);
+    req.end();
+  });
+}
 
-function escapeHtml(str) {
+function esc(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function escapeJson(str) {
+function escJ(str) {
   return String(str).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
 }
 
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Webhook server escuchando en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Webhook server en puerto ${PORT}`));
