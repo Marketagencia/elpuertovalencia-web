@@ -1,0 +1,14 @@
+Options -Indexes
+
+RewriteEngine On
+
+# Dejar pasar archivos y carpetas que existen físicamente
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Pasar el webhook de AutoSEO directamente a webhook.php
+RewriteRule ^webhook\.php$ webhook.php [L]
+
+# Rutas de artículos — redirigir /slug a articulo.php?slug=slug
+RewriteRule ^([a-z0-9-]+)/?$ articulo.php?slug=$1 [L,QSA]

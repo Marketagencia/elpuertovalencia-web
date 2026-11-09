@@ -159,7 +159,8 @@
       "Bash(rm -rf /tmp/imgtest)",
       "Bash(GIT_ASKPASS=true git push origin main)",
       "Bash(mkdir -p \"/Users/pablosaez/Claude/Projects/pagina wen elpuertovalencia/uploads/actividades\" && cp \"/Users/pablosaez/Claude/Projects/pagina wen elpuertovalencia/imagenes actividades/\"*.png \"/Users/pablosaez/Claude/Projects/pagina wen elpuertovalencia/uploads/actividades/\" && ls \"/Users/pablosaez/Claude/Projects/pagina wen elpuertovalencia/uploads/actividades/\")",
-      "Bash(cp \"/private/tmp/claude-501/-Users-pablosaez-Claude-Projects-pagina-wen-elpuertovalencia/49823a08-f91b-44cf-9513-a7c8beca5e08/images/1.webp\" \"/Users/pablosaez/Claude/Projects/pagina wen elpuertovalencia/halloween/cartel.webp\" && echo \"ok\")"
+      "Bash(cp \"/private/tmp/claude-501/-Users-pablosaez-Claude-Projects-pagina-wen-elpuertovalencia/49823a08-f91b-44cf-9513-a7c8beca5e08/images/1.webp\" \"/Users/pablosaez/Claude/Projects/pagina wen elpuertovalencia/halloween/cartel.webp\" && echo \"ok\")",
+      "Bash(cp \"/private/tmp/claude-501/-Users-pablosaez-Claude-Projects-pagina-wen-elpuertovalencia/49823a08-f91b-44cf-9513-a7c8beca5e08/images/1.webp\" \"/Users/pablosaez/Claude/Projects/pagina wen elpuertovalencia/comidas-de-empresa/fiesta-empresa.webp\")"
     ]
   }
 }
